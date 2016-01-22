@@ -5,8 +5,14 @@ class Person(object):
 
 
 class Fellow(Person):
+    # Member variable for allocation
+    # Staff can't be allocated living space
+    position = "FELLOW"
     pass
 
 
 class Staff(Person):
+    # Member variable for allocation
+    # Staff can't be allocated living space
+    position = "STAFF"
     pass
