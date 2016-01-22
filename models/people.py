@@ -1,18 +1,23 @@
 class Person(object):
-    def __init__(self, name, position):
+    def __init__(self, name):
         self.name = name
-        self.position = position
 
 
 class Fellow(Person):
     # Member variable for allocation
     # Staff can't be allocated living space
     position = "FELLOW"
-    pass
+    rooms_allocated = ['0', '0']
+
+    def __repr__(self):
+        return '{"name": \"%s\", "position": \"%s\", "rooms_allocated": %s}' % (self.name, self.position, self.rooms_allocated)
 
 
 class Staff(Person):
     # Member variable for allocation
     # Staff can't be allocated living space
     position = "STAFF"
-    pass
+    rooms_allocated = ['0']
+
+    def __repr__(self):
+        return '{"name": \"%s\", "position": \"%s\", "rooms_allocated": %s}' % (self.name, self.position, self.rooms_allocated)
