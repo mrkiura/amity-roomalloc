@@ -1,1 +1,1 @@
-# amity-roomalloc
+# AMITY ROOM ALLOCATION SYSTEM
