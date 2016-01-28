@@ -58,10 +58,16 @@ livings = [(L1.name, L1.type, L1.capacity, ",".join(L1.spaces)),
            (L9.name, L9.type, L9.capacity, ",".join(L9.spaces)),
            (L10.name, L10.type, L10.capacity, ",".join(L10.spaces))]
 
-cursor.executemany("INSERT INTO rooms VALUES (?, ?, ?, ?)", offices)
-conn.commit()
+try:
+    cursor.executemany("INSERT INTO rooms VALUES (?, ?, ?, ?)", offices)
+    conn.commit()
 
-cursor.executemany("INSERT INTO rooms VALUES (?, ?, ?, ?)", livings)
-conn.commit()
+    cursor.executemany("INSERT INTO rooms VALUES (?, ?, ?, ?)", livings)
+    conn.commit()
 
-print "Database populated successfully"
+    print "Database populated successfully"
+except sqlite3.IntegrityError:
+    print "Already populated"
+
+
+
