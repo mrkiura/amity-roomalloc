@@ -7,8 +7,10 @@ print sys.argv[1]
 # sys.argv[2] is a txt file
 
 
-def allocate():
-    pass
+def allocate(thefile):
+    with open(thefile) as f:
+        for line in f:
+            print line
 
 
 # get allocations function
@@ -38,3 +40,9 @@ def print_allocations():
 
 def print_members():
     pass
+
+
+# call methods
+# allocate
+if sys.argv[1] == "allocate" and sys.argv[2][-3:] == "txt":
+    allocate(sys.argv[2])
