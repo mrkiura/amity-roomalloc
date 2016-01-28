@@ -34,7 +34,7 @@ conn = sqlite3.connect("data/roomalloc.db")
 cursor = conn.cursor()
 
 cursor.execute("""CREATE TABLE IF NOT EXISTS rooms
-                  (name text, type text, capacity integer, spaces text)""")
+                  (name text PRIMARY KEY, type text, capacity integer, spaces text)""")
 
 offices = [(O1.name, O1.type, O1.capacity, ",".join(O1.spaces)),
            (O2.name, O2.type, O2.capacity, ",".join(O2.spaces)),
