@@ -68,6 +68,3 @@ try:
     print "Database populated successfully"
 except sqlite3.IntegrityError:
     print "Already populated"
-
-
-
