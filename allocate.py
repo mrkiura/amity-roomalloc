@@ -128,11 +128,28 @@ def print_allocations():
 # and sys.argv[3] is a room name
 
 
-def print_members():
-    pass
+def print_members(room):
+    cursor.execute("SELECT type, capacity, spaces from rooms where name = ?", ([room]))
 
+    theroom = cursor.fetchone()
+
+    print "**********ROOM DETAILS************\n"
+    print "ROOM TYPE: %s \t ROOM NAME: %s \t CAPACITY: %s \n\n" % (theroom[0], room, theroom[1])
+
+    print "**********ROOM MEMBERS************\n"
+
+    list_of_spaces = theroom[2].split(',')
+    list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)  # remove unicode encoding
+
+    for i in list_of_spaces:
+        if i != '0':
+            print i
 
 # call methods
 # allocate
 if sys.argv[1] == "allocate" and sys.argv[2][-3:] == "txt":
     allocate(sys.argv[2])
+
+# print the members of a given room
+if sys.argv[1] == "print" and sys.argv[2] == "allocations" and sys.argv[3] is not None:
+    print_members(sys.argv[3])
