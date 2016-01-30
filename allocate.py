@@ -245,20 +245,48 @@ def get_unallocated(thefile):
             print "%s\n" % name
 
 
-# call methods
-# allocate
-if len(sys.argv) == 3 and sys.argv[1] == "allocate" and sys.argv[2][-3:] == "txt":
-    allocate(sys.argv[2])
+def depopulate():
+    """Deletes the rooms table from the database.
 
-# print the members of a given room
-if len(sys.argv) == 4:
-    if sys.argv[1] == "print" and sys.argv[2] == "allocations" and sys.argv[3] is not None:
-        print_members(sys.argv[3])
+    Args:
+        None
 
-# show all allocations on screen
-if len(sys.argv) == 3 and sys.argv[1] == "get" and sys.argv[2] == "allocations":
-    get_allocations()
+    Returns:
+        A success message: Depopulation successful.
+              Run populate.py again to repopulate.
 
-# print all allocations to allocations.txt
-if len(sys.argv) == 3 and sys.argv[1] == "print" and sys.argv[2] == "allocations":
-    print_allocations()
+    Raises:
+        sqlite3Error: An error occurred while dropping the table.
+    """
+    try:
+        cursor.execute("DROP TABLE rooms")
+        conn.commit()
+        print "Depopulation successful. Run populate.py again to repopulate."
+    except sqlite3.Error:
+        print "Depopulation already done. Run populate.py."
+
+
+# call methods based on arguments given
+if len(sys.argv) >= 2:
+    # allocate rooms
+    if len(sys.argv) == 3 and sys.argv[1] == "allocate" and sys.argv[2][-3:] == "txt":
+        allocate(sys.argv[2])
+
+    # print the members of a given room
+    if len(sys.argv) == 4:
+        if sys.argv[1] == "print" and sys.argv[2] == "allocations" and sys.argv[3] is not None:
+            print_members(sys.argv[3])
+
+    # show all allocations on screen
+    if len(sys.argv) == 3 and sys.argv[1] == "get" and sys.argv[2] == "allocations":
+        get_allocations()
+
+    # print all allocations to allocations.txt
+    if len(sys.argv) == 3 and sys.argv[1] == "print" and sys.argv[2] == "allocations":
+        print_allocations()
+
+    # remove everything in db
+    if len(sys.argv) == 2 and sys.argv[1] == "depopulate":
+        depopulate()
+else:
+    print "No such command. Extra input required"
