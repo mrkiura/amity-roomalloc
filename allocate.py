@@ -101,6 +101,8 @@ def allocate(thefile):
                                 break  # stop looping through row
 
     print "Rooms allocated successfully"
+    get_unallocated(thefile)
+
 # get allocations function
 # will be called if sys.argv[1] is get and
 # sys.argv[2] is allocations
@@ -196,9 +198,56 @@ def print_members(room):
         if i != '0':
             print i
 
+
+# will be called at the end of the
+# allocate function
+
+def get_unallocated(thefile):
+    temp = []
+    unallocated_people = []
+
+    with open(thefile) as f:
+        # reads file and puts each line in temp list
+        # the temp list will then be used for checking names
+
+        for line in f:
+            if len(line) > 2:
+                temp = line.split()
+
+                name = temp[0] + " " + temp[1]
+                thereflag = False
+
+                # select all offices from db
+                cursor.execute("SELECT name, capacity, spaces from rooms where type = 'OFFICE' ")
+
+                # loop through rows. If name is found in spaces,
+                # assign thereflag true and  break
+                for row in cursor:
+                    list_of_spaces = row[2].split(',')
+                    list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)  # remove unicode encoding
+
+                    if name in list_of_spaces:  # if name exists in db
+                        thereflag = True
+                        break
+
+                if thereflag is False:
+                    unallocated_people.append(name)
+
+    # check if anyone exists in the unallocated people list
+    #  and print their name
+    if len(unallocated_people) == 0:
+        print "No Unallocated People"
+    else:
+        print "----------------------------"
+        print "UNALLOCATED PEOPLE"
+        print "----------------------------\n"
+        for name in unallocated_people:
+            print "%s\n" % name
+
+
 # call methods
 # allocate
-if sys.argv[1] == "allocate" and sys.argv[2][-3:] == "txt":
+if len(sys.argv) == 3 and sys.argv[1] == "allocate" and sys.argv[2][-3:] == "txt":
     allocate(sys.argv[2])
 
 # print the members of a given room
@@ -207,7 +256,7 @@ if len(sys.argv) == 4:
         print_members(sys.argv[3])
 
 # show all allocations on screen
-if sys.argv[1] == "get" and sys.argv[2] == "allocations":
+if len(sys.argv) == 3 and sys.argv[1] == "get" and sys.argv[2] == "allocations":
     get_allocations()
 
 # print all allocations to allocations.txt
