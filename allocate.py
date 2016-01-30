@@ -141,8 +141,36 @@ def get_allocations():
 # and sys.argv[2] is allocations
 
 def print_allocations():
+    cursor.execute("SELECT name, type, capacity, spaces FROM rooms")
 
-    pass
+    with open("allocations.txt", "a") as fo:
+        fo.write("^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n")
+        fo.write("NEW LIST STARTS HERE\n")
+        fo.write("^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n")
+
+    for row in cursor:
+        list_of_spaces = row[3].split(',')
+        list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)  # remove unicode encoding
+
+        flag = False  # empty room
+
+        for i in list_of_spaces:
+            if i != '0':  # if room has at least one occupant
+                flag = True  # set flag to true
+                break
+
+        if flag:
+            with open("allocations.txt", "a") as fo:
+                fo.write("----------------------------\n")
+                fo.write("ROOM TYPE: %s\n" % row[1])
+                fo.write("ROOM NAME: %s\n" % row[0])
+                fo.write("CAPACITY: %s\n\n" % row[2])
+                fo.write("**MEMBERS**\n")
+                for item in list_of_spaces:
+                    if item != '0':
+                        fo.write("%s\n" % item)
+                fo.write("----------------------------\n")
+                fo.write("\n")
 
 # will be given a room name and
 # print the members allocated to it
@@ -174,9 +202,14 @@ if sys.argv[1] == "allocate" and sys.argv[2][-3:] == "txt":
     allocate(sys.argv[2])
 
 # print the members of a given room
-if sys.argv[1] == "print" and sys.argv[2] == "allocations" and sys.argv[3] is not None:
-    print_members(sys.argv[3])
+if len(sys.argv) == 4:
+    if sys.argv[1] == "print" and sys.argv[2] == "allocations" and sys.argv[3] is not None:
+        print_members(sys.argv[3])
 
 # show all allocations on screen
 if sys.argv[1] == "get" and sys.argv[2] == "allocations":
     get_allocations()
+
+# print all allocations to allocations.txt
+if len(sys.argv) == 3 and sys.argv[1] == "print" and sys.argv[2] == "allocations":
+    print_allocations()
