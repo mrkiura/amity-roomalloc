@@ -109,7 +109,30 @@ def allocate(thefile):
 
 
 def get_allocations():
-    pass
+    cursor.execute("SELECT name, type, capacity, spaces FROM rooms")
+
+    for row in cursor:
+        list_of_spaces = row[3].split(',')
+        list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)  # remove unicode encoding
+
+        flag = False  # empty room
+
+        for i in list_of_spaces:
+            if i != '0':  # if room has at least one occupant
+                flag = True  # set flag to true
+                break
+
+        if flag:
+            print "----------------------------"
+            print "ROOM TYPE: %s" % row[1]
+            print "ROOM NAME: %s" % row[0]
+            print "CAPACITY: %s\n" % row[2]
+            print "**MEMBERS**"
+            for item in list_of_spaces:
+                if item != '0':
+                    print item
+            print "----------------------------"
+            print "\n"
 
 
 # print allocations function
@@ -153,3 +176,7 @@ if sys.argv[1] == "allocate" and sys.argv[2][-3:] == "txt":
 # print the members of a given room
 if sys.argv[1] == "print" and sys.argv[2] == "allocations" and sys.argv[3] is not None:
     print_members(sys.argv[3])
+
+# show all allocations on screen
+if sys.argv[1] == "get" and sys.argv[2] == "allocations":
+    get_allocations()
