@@ -1,5 +1,6 @@
 import sys
 import sqlite3
+import random
 
 conn = sqlite3.connect('data/roomalloc.db')
 cursor = conn.cursor()
@@ -9,96 +10,103 @@ cursor = conn.cursor()
 
 
 def allocate(thefile):
-    temp = []
+    # list of items in one line
+    one_temp = []
+    # list containing lists of all the lines
+    alllines = []
 
     with open(thefile) as f:
-        # reads file and puts each line in temp list
-        # the temp list will then be used for assignation
+        # reads file and puts each line in alllines list
+        # as a temp list which will then be used for assignation
 
         for line in f:
             if len(line) > 2:
-                temp = line.split()
+                one_temp = line.split()
+                alllines.append(one_temp)
 
-                # check if len(temp) is 3 which means
-                # it is a staff
-                if len(temp) == 3:  # STAFF
-                    # select all offices from db
-                    cursor.execute("SELECT name, capacity, spaces from rooms where type = 'OFFICE' ")
+    # randomize people before allocation
+    random.shuffle(alllines)
 
-                    # loop through rows. If a zero is found in spaces,
-                    # assign room, break
-                    for row in cursor:
-                        list_of_spaces = row[2].split(',')
-                        list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)  # remove unicode encoding
+    for temp in alllines:
+        if len(temp) == 3:  # STAFF
+            # select all offices from db
+            cursor.execute("SELECT name, capacity, spaces from rooms where type = 'OFFICE' ")
 
-                        if '0' in list_of_spaces:  # if office not full
-                            for index, item in enumerate(list_of_spaces):  # loop through the items in office
-                                if item == '0':  # if one of the items in office is a zero
-                                    # assign a name to that index, convert list to string and update in db
-                                    list_of_spaces[index] = temp[0] + " " + temp[1]
-                                    string_of_spaces = ",".join(list_of_spaces)
+            # loop through rows. If a zero is found in spaces,
+            # assign room, break
 
-                                    cursor.execute("UPDATE rooms set spaces = ? where name = ?", (string_of_spaces, row[0]))
-                                    conn.commit()
-                                    print list_of_spaces
-                                    break
-                            break  # stop looping through row
-                elif len(temp) == 4:  # FELLOWS
-                    # assign office to all fellows
-                    if temp[3] == "N" or temp[3] == "Y":
-                        # allocate offices to everyone
-                        # select all offices from db
-                        cursor.execute("SELECT name, capacity, spaces from rooms where type = 'OFFICE' ")
+            for row in cursor:
+                list_of_spaces = row[2].split(',')
+                list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)  # remove unicode encoding
 
-                        # loop through rows. If a zero is found in spaces,
-                        # assign room, break
-                        for row in cursor:
-                            list_of_spaces = row[2].split(',')
-                            list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)  # remove unicode encoding
+                if '0' in list_of_spaces:  # if office not full
+                    for index, item in enumerate(list_of_spaces):  # loop through the items in office
+                        if item == '0':  # if one of the items in office is a zero
+                            # assign a name to that index, convert list to string and update in db
+                            list_of_spaces[index] = temp[0] + " " + temp[1]
+                            string_of_spaces = ",".join(list_of_spaces)
 
-                            if '0' in list_of_spaces:  # if office not full
-                                # loop through the items in office
-                                for index, item in enumerate(list_of_spaces):
-                                    # if one of the items in office is a zero
-                                    if item == '0':
-                                        # assign a person name to that index,
-                                        # convert list to string and update in db
-                                        list_of_spaces[index] = temp[0] + " " + temp[1]
-                                        string_of_spaces = ",".join(list_of_spaces)
+                            cursor.execute("UPDATE rooms set spaces = ? where name = ?", (string_of_spaces, row[0]))
+                            conn.commit()
+                            print list_of_spaces
+                            break
+                    break  # stop looping through row
+        elif len(temp) == 4:  # FELLOWS
+            # assign office to all fellows
+            if temp[3] == "N" or temp[3] == "Y":
+                # allocate offices to everyone
+                # select all offices from db
+                cursor.execute("SELECT name, capacity, spaces from rooms where type = 'OFFICE' ")
 
-                                        cursor.execute("UPDATE rooms set spaces = ? where name = ?", (string_of_spaces, row[0]))
-                                        conn.commit()
-                                        print list_of_spaces
-                                        break  # stop looping through spaces
-                                break  # stop looping through row
+                # loop through rows. If a zero is found in spaces,
+                # assign room, break
+                for row in cursor:
+                    list_of_spaces = row[2].split(',')
+                    list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)  # remove unicode encoding
 
-                    if temp[3] == "Y":
-                        # allocate living space for those fellows
-                        # who want it
-                        # select all living spaces from db
-                        cursor.execute("SELECT name, capacity, spaces from rooms where type = 'LIVING' ")
+                    if '0' in list_of_spaces:  # if office not full
+                        # loop through the items in office
+                        for index, item in enumerate(list_of_spaces):
+                            # if one of the items in office is a zero
+                            if item == '0':
+                                # assign a person name to that index,
+                                # convert list to string and update in db
+                                list_of_spaces[index] = temp[0] + " " + temp[1]
+                                string_of_spaces = ",".join(list_of_spaces)
 
-                        # loop through rows. If a zero is found in spaces,
-                        # assign room, break
-                        for row in cursor:
-                            list_of_spaces = row[2].split(',')
-                            list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)  # remove unicode encoding
+                                cursor.execute("UPDATE rooms set spaces = ? where name = ?", (string_of_spaces, row[0]))
+                                conn.commit()
+                                print list_of_spaces
+                                break  # stop looping through spaces
+                        break  # stop looping through row
 
-                            if '0' in list_of_spaces:  # if office not full
-                                # loop through the items in office
-                                for index, item in enumerate(list_of_spaces):
-                                    # if one of the items in office is a zero
-                                    if item == '0':
-                                        # assign a person name to that index,
-                                        # convert list to string and update in db
-                                        list_of_spaces[index] = temp[0] + " " + temp[1]
-                                        string_of_spaces = ",".join(list_of_spaces)
+            if temp[3] == "Y":
+                # allocate living space for those fellows
+                # who want it
+                # select all living spaces from db
+                cursor.execute("SELECT name, capacity, spaces from rooms where type = 'LIVING' ")
 
-                                        cursor.execute("UPDATE rooms set spaces = ? where name = ?", (string_of_spaces, row[0]))
-                                        conn.commit()
-                                        print list_of_spaces
-                                        break  # stop looping through spaces
-                                break  # stop looping through row
+                # loop through rows. If a zero is found in spaces,
+                # assign room, break
+                for row in cursor:
+                    list_of_spaces = row[2].split(',')
+                    list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)  # remove unicode encoding
+
+                    if '0' in list_of_spaces:  # if office not full
+                        # loop through the items in office
+                        for index, item in enumerate(list_of_spaces):
+                            # if one of the items in office is a zero
+                            if item == '0':
+                                # assign a person name to that index,
+                                # convert list to string and update in db
+                                list_of_spaces[index] = temp[0] + " " + temp[1]
+                                string_of_spaces = ",".join(list_of_spaces)
+
+                                cursor.execute("UPDATE rooms set spaces = ? where name = ?", (string_of_spaces, row[0]))
+                                conn.commit()
+                                print list_of_spaces
+                                break  # stop looping through spaces
+                        break  # stop looping through row
 
     print "Rooms allocated successfully"
     get_unallocated(thefile)
