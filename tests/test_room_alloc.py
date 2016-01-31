@@ -1,23 +1,27 @@
 import unittest
-from populate import O1, L1
+from populate import populate
 
 
 class AmityRoomAllocTestCase(unittest.TestCase):
 
     def test_populate(self):
-    	"""Tests for populate.py
+    	"""Tests for populate.py's populate function
         Checks if offices and living spaces have been
         initialized correctly
         """
-        self.failUnlessEqual(O1.name, "Office1")
-        self.failUnlessEqual(O1.type, "OFFICE")
-        self.failUnlessEqual(O1.capacity, 6)
-        self.failUnlessEqual(O1.spaces, ['0', '0', '0', '0', '0', '0'])
 
-        self.failUnlessEqual(L1.name, "LivingSpace1")
-        self.failUnlessEqual(L1.type, "LIVING")
-        self.failUnlessEqual(L1.capacity, 4)
-        self.failUnlessEqual(L1.spaces, ['0', '0', '0', '0'])
+        lst = populate()
+
+        # check offices randomly
+        self.failUnlessEqual(lst[0][0], ('Narnia', 'OFFICE', 6, '0,0,0,0,0,0'))
+        self.failUnlessEqual(lst[0][8], ('Orange', 'OFFICE', 6, '0,0,0,0,0,0'))
+        self.failUnlessEqual(lst[0][6], ('Occulus', 'OFFICE', 6, '0,0,0,0,0,0'))
+        self.failUnlessEqual(lst[0][4], ('Hogwarts', 'OFFICE', 6, '0,0,0,0,0,0'))
+
+        self.failUnlessEqual(lst[1][0], ('Wood', 'LIVING', 4, '0,0,0,0'))
+        self.failUnlessEqual(lst[1][3], ('Wick', 'LIVING', 4, '0,0,0,0'))
+        self.failUnlessEqual(lst[1][9], ('Terra', 'LIVING', 4, '0,0,0,0'))
+        self.failUnlessEqual(lst[1][5], ('Gryffindor', 'LIVING', 4, '0,0,0,0'))
 
 if __name__ == '__main__':
     unittest.main()
