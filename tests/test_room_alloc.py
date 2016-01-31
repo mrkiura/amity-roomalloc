@@ -1,5 +1,6 @@
 import unittest
 from populate import populate
+from allocate import print_allocations
 
 
 class AmityRoomAllocTestCase(unittest.TestCase):
@@ -22,6 +23,14 @@ class AmityRoomAllocTestCase(unittest.TestCase):
         self.failUnlessEqual(lst[1][3], ('Wick', 'LIVING', 4, '0,0,0,0'))
         self.failUnlessEqual(lst[1][9], ('Terra', 'LIVING', 4, '0,0,0,0'))
         self.failUnlessEqual(lst[1][5], ('Gryffindor', 'LIVING', 4, '0,0,0,0'))
+
+    def test_print_allocations(self):
+        """Tests for allocate.py's print_allocations function
+        Checks if function ran correctly
+        """
+
+        msg = print_allocations()
+        self.assertEqual(msg, "Success")
 
 if __name__ == '__main__':
     unittest.main()
