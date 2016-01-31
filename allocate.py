@@ -182,6 +182,8 @@ def print_allocations():
                 fo.write("----------------------------\n")
                 fo.write("\n")
 
+    return "Success"
+
 
 def print_members(room):
     """Shows the list of people allocated to a room
