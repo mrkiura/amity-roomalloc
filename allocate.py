@@ -182,18 +182,37 @@ def print_allocations():
                 fo.write("----------------------------\n")
                 fo.write("\n")
 
-# will be given a room name and
-# print the members allocated to it
-# will be called if sys.argv[1] is print
-# and sys.argv[2] is members
-# and sys.argv[3] is a room name
-
 
 def print_members(room):
-    cursor.execute("SELECT type, capacity, spaces from rooms where name = ?", ([room]))
+    """Shows the list of people allocated to a room
+    Called by command:
+        python allocate.py print allocations <roomname>
 
+    Args:
+        A room name
+
+    Returns:
+        A list of room members on screen
+
+    Raises:
+        A "No such room" sqlite3 Error
+    """
+
+    try:
+        # select required room from databse
+        cursor.execute("SELECT type, capacity, spaces from rooms where name = ?", ([room]))
+    except sqlite3.Error:
+        print "Error occurred"
+
+    # fetch and assign the result into theroom list
     theroom = cursor.fetchone()
 
+    # exit if no room found
+    if theroom is None:
+        print "No such room"
+        quit()
+
+    # print the info in theroom list
     print "**********ROOM DETAILS************\n"
     print "ROOM TYPE: %s \t ROOM NAME: %s \t CAPACITY: %s \n\n" % (theroom[0], room, theroom[1])
 
@@ -255,7 +274,7 @@ def get_unallocated(thefile):
                         thereflag = True
                         break
 
-                if thereflag is False: # person not found
+                if thereflag is False:  # person not found
                     unallocated_people.append(name)
 
     # check if anyone exists in the unallocated people list
