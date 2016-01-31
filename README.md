@@ -1,3 +1,4 @@
+![alt text](https://travis-ci.org/andela-aomondi/amity-roomalloc.svg?branch=master)
 # AMITY ROOM ALLOCATION SYSTEM
 
 This is a system created to allocate rooms randomly for Andela's
