@@ -1,0 +1,5 @@
+.DS_Store
+models/.DS_Store
+*.pyc
+data/*
+.coverage
