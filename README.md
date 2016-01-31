@@ -1,4 +1,6 @@
 ![alt text](https://travis-ci.org/andela-aomondi/amity-roomalloc.svg?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/andela-aomondi/amity-roomalloc/badge.svg?branch=master)](https://coveralls.io/github/andela-aomondi/amity-roomalloc?branch=master)
+
 # AMITY ROOM ALLOCATION SYSTEM
 
 This is a system created to allocate rooms randomly for Andela's
