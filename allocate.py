@@ -207,11 +207,21 @@ def print_members(room):
             print i
 
 
-# will be called at the end of the
-# allocate function
-
 def get_unallocated(thefile):
+    """Shows the list of unallocated people
+    Called by the allocate function before it exits
+
+    Args:
+        A txt file
+
+    Returns:
+        A message "No Unallocated People" otherwise
+            prints a list of unallocated people on screen
+    """
+
+    #  will hold a line from the file temporarily
     temp = []
+    #  will hold names of unallocated people
     unallocated_people = []
 
     with open(thefile) as f:
@@ -219,10 +229,17 @@ def get_unallocated(thefile):
         # the temp list will then be used for checking names
 
         for line in f:
+            # put line in temp only if it's length is greater
+            # than two
             if len(line) > 2:
                 temp = line.split()
 
+                # get name of the person in current line
                 name = temp[0] + " " + temp[1]
+
+                # assume person is unallocated.
+                # this flag will be set to true if person
+                # is actually allocated
                 thereflag = False
 
                 # select all offices from db
@@ -238,7 +255,7 @@ def get_unallocated(thefile):
                         thereflag = True
                         break
 
-                if thereflag is False:
+                if thereflag is False: # person not found
                     unallocated_people.append(name)
 
     # check if anyone exists in the unallocated people list
@@ -255,6 +272,8 @@ def get_unallocated(thefile):
 
 def depopulate():
     """Deletes the rooms table from the database.
+    Called by this command:
+        python allocate.py depopulate
 
     Args:
         None
@@ -276,7 +295,7 @@ def depopulate():
 
 # call methods based on arguments given
 if len(sys.argv) >= 2:
-    # allocate rooms
+    # call allocate rooms
     if len(sys.argv) == 3 and sys.argv[1] == "allocate" and sys.argv[2][-3:] == "txt":
         allocate(sys.argv[2])
 
