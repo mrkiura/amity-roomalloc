@@ -24,7 +24,7 @@ def populate():
         livingspace_objects.append(LivingSpace(livingspace_names[i]))
 
     # Populate database with empty rooms
-    conn = sqlite3.connect("data/roomalloc.db")
+    conn = sqlite3.connect("roomalloc.db")
     cursor = conn.cursor()
 
     # will hold tuples containing information for

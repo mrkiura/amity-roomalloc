@@ -2,7 +2,7 @@ import sys
 import sqlite3
 import random
 
-conn = sqlite3.connect('data/roomalloc.db')
+conn = sqlite3.connect('roomalloc.db')
 cursor = conn.cursor()
 # allocate function
 # will be called if sys.argv[1] is allocate and
