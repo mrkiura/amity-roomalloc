@@ -4,15 +4,28 @@ import random
 
 conn = sqlite3.connect('roomalloc.db')
 cursor = conn.cursor()
-# allocate function
-# will be called if sys.argv[1] is allocate and
-# sys.argv[2] is a txt file
 
 
 def allocate(thefile):
-    # list of items in one line
+    """Reads a formatted text file of names and allocates
+    rooms to random people
+
+    Called by this command:
+        python allocate.py allocate <nameoffile>
+
+    Calls the get_unallocated function when it exits which
+        prints the names of unallocated people
+
+    Args:
+        The file name
+
+    Returns:
+        Prints a message on success
+    """
+    # will hold list of items from a read line
     one_temp = []
-    # list containing lists of all the lines
+
+    # list containing lists of all the read lines in the file
     alllines = []
 
     with open(thefile) as f:
@@ -21,50 +34,67 @@ def allocate(thefile):
 
         for line in f:
             if len(line) > 2:
+                # split current line into a list
                 one_temp = line.split()
+
+                # add current line to list of all lines
                 alllines.append(one_temp)
 
     # randomize people before allocation
     random.shuffle(alllines)
 
+    # loop through all the lines from file and allocate people rooms
     for temp in alllines:
-        if len(temp) == 3:  # STAFF
-            # select all offices from db
+        if len(temp) == 3:  # STAFF e.g CHIDIEBERE NNADI STAFF
+            # select all offices from db (allocate only to office)
             cursor.execute("SELECT name, capacity, spaces from rooms where type = 'OFFICE' ")
 
             # loop through rows. If a zero is found in spaces,
-            # assign room, break
-
+            # assign room to current staff member then exit
             for row in cursor:
+                # split string of spaces from db into a list
                 list_of_spaces = row[2].split(',')
-                list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)  # remove unicode encoding
 
-                if '0' in list_of_spaces:  # if office not full
-                    for index, item in enumerate(list_of_spaces):  # loop through the items in office
-                        if item == '0':  # if one of the items in office is a zero
-                            # assign a name to that index, convert list to string and update in db
+                # remove unicode encoding
+                list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)
+
+                # if office not full
+                if '0' in list_of_spaces:
+                    # loop through the items in office
+                    for index, item in enumerate(list_of_spaces):
+                        # if current item is zero
+                        if item == '0':
+                            # assign a name to that index, convert list
+                            # to string and update in db
                             list_of_spaces[index] = temp[0] + " " + temp[1]
                             string_of_spaces = ",".join(list_of_spaces)
 
+                            # update database with new name
                             cursor.execute("UPDATE rooms set spaces = ? where name = ?", (string_of_spaces, row[0]))
                             conn.commit()
-                            print list_of_spaces
+
+                            # stop looping through db spaces
                             break
-                    break  # stop looping through row
-        elif len(temp) == 4:  # FELLOWS
-            # assign office to all fellows
+
+                    # stop looping through row
+                    break
+        elif len(temp) == 4:  # FELLOWS e.g AMOS OMONDI FELLOW Y
+            # assign office to all fellows regardless of Y or N
             if temp[3] == "N" or temp[3] == "Y":
-                # allocate offices to everyone
                 # select all offices from db
                 cursor.execute("SELECT name, capacity, spaces from rooms where type = 'OFFICE' ")
 
                 # loop through rows. If a zero is found in spaces,
                 # assign room, break
                 for row in cursor:
+                    # split string of spaces from db into a list
                     list_of_spaces = row[2].split(',')
-                    list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)  # remove unicode encoding
 
-                    if '0' in list_of_spaces:  # if office not full
+                    # remove unicode encoding
+                    list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)
+
+                    # if office not full
+                    if '0' in list_of_spaces:
                         # loop through the items in office
                         for index, item in enumerate(list_of_spaces):
                             # if one of the items in office is a zero
@@ -76,23 +106,31 @@ def allocate(thefile):
 
                                 cursor.execute("UPDATE rooms set spaces = ? where name = ?", (string_of_spaces, row[0]))
                                 conn.commit()
-                                print list_of_spaces
-                                break  # stop looping through spaces
-                        break  # stop looping through row
+
+                                # stop looping through spaces
+                                break
+
+                        # stop looping through row
+                        break
 
             if temp[3] == "Y":
                 # allocate living space for those fellows
                 # who want it
+
                 # select all living spaces from db
                 cursor.execute("SELECT name, capacity, spaces from rooms where type = 'LIVING' ")
 
                 # loop through rows. If a zero is found in spaces,
                 # assign room, break
                 for row in cursor:
+                    # split string of spaces from db into a list
                     list_of_spaces = row[2].split(',')
-                    list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)  # remove unicode encoding
 
-                    if '0' in list_of_spaces:  # if office not full
+                    # remove unicode encoding
+                    list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)
+
+                    # if office not full
+                    if '0' in list_of_spaces:
                         # loop through the items in office
                         for index, item in enumerate(list_of_spaces):
                             # if one of the items in office is a zero
@@ -104,34 +142,55 @@ def allocate(thefile):
 
                                 cursor.execute("UPDATE rooms set spaces = ? where name = ?", (string_of_spaces, row[0]))
                                 conn.commit()
-                                print list_of_spaces
-                                break  # stop looping through spaces
-                        break  # stop looping through row
 
+                                # stop looping through spaces
+                                break
+
+                        # stop looping through row
+                        break
+
+    # Notify user of success
     print "Rooms allocated successfully"
-    get_unallocated(thefile)
 
-# get allocations function
-# will be called if sys.argv[1] is get and
-# sys.argv[2] is allocations
-# shows the rooms and the people assigned
-# to them onscreen
+    # call get_unallocated function to print
+    # list of unallocated people if any
+    get_unallocated(thefile)
 
 
 def get_allocations():
+    """Lists all the rooms and all their members on
+    screen
+
+    Called by this command:
+        python allocate.py get allocations
+
+    Returns:
+        Prints members of non-empty rooms
+    """
+    # select all details from all rooms
     cursor.execute("SELECT name, type, capacity, spaces FROM rooms")
 
+    # loop through rooms
     for row in cursor:
+        # for each room, split it's spaces into a list
         list_of_spaces = row[3].split(',')
-        list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)  # remove unicode encoding
 
-        flag = False  # empty room
+        # remove unicode encoding
+        list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)
 
+        # set flag to false i.e. assume the room is empty
+        flag = False
+
+        # loop through the spaces
         for i in list_of_spaces:
-            if i != '0':  # if room has at least one occupant
-                flag = True  # set flag to true
+            # if room has at least one occupant
+            # set flag to true and exit
+            if i != '0':
+                flag = True
                 break
 
+        # when flag is true i.e. at least one person has been found
+        # in that room, print the details of that room
         if flag:
             print "----------------------------"
             print "ROOM TYPE: %s" % row[1]
@@ -145,30 +204,46 @@ def get_allocations():
             print "\n"
 
 
-# print allocations function
-# output allocations to a txt file
-# will be called if sys.argv[1] is print
-# and sys.argv[2] is allocations
-
 def print_allocations():
+    """Prints all the rooms and all their members in a text
+    file called allocations.txt
+
+    Called by this command:
+        python allocate.py print allocations
+
+    Returns:
+        Prints members of non-empty rooms in
+        allocations.txt and returns Success
+    """
+    # select all details from all rooms
     cursor.execute("SELECT name, type, capacity, spaces FROM rooms")
 
+    # create file allocations.txt and add heading
     with open("allocations.txt", "a") as fo:
         fo.write("^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n")
         fo.write("NEW LIST STARTS HERE\n")
         fo.write("^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n")
 
+    # loop through selected rooms
     for row in cursor:
+        # for each room, split it's spaces into a list
         list_of_spaces = row[3].split(',')
-        list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)  # remove unicode encoding
 
-        flag = False  # empty room
+        # remove unicode encoding
+        list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)
 
+        # set flag to false i.e. assume the room is empty
+        flag = False
+
+        # loop through the spaces
         for i in list_of_spaces:
-            if i != '0':  # if room has at least one occupant
-                flag = True  # set flag to true
+            # if room has at least one occupant
+            if i != '0':
+                # set flag to true and exit
+                flag = True
                 break
 
+        # if flag is true, print the details to allocations.txt
         if flag:
             with open("allocations.txt", "a") as fo:
                 fo.write("----------------------------\n")
@@ -182,6 +257,7 @@ def print_allocations():
                 fo.write("----------------------------\n")
                 fo.write("\n")
 
+    print "Room details printed to allocations.txt"
     return "Success"
 
 
