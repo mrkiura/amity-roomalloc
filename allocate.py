@@ -396,6 +396,8 @@ def depopulate():
     except sqlite3.Error:
         print "Depopulation already done. Run populate.py."
 
+    return "Success"
+
 
 # call methods based on arguments given
 if len(sys.argv) >= 2:
