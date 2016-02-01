@@ -1,6 +1,6 @@
 import unittest
 from populate import populate
-from allocate import print_allocations
+from allocate import print_allocations, allocate
 
 
 class AmityRoomAllocTestCase(unittest.TestCase):
@@ -31,6 +31,12 @@ class AmityRoomAllocTestCase(unittest.TestCase):
 
         msg = print_allocations()
         self.assertEqual(msg, "Success")
+
+    def test_allocate_fails_on_wrong_input(self):
+        '''Ensures allocate.py's allocate function only
+        allocates when called with a valid txt file'''
+        msg = allocate("jbhvbhjbvhjv.tx")
+        self.assertEqual(msg, "Not a txt file")
 
 if __name__ == '__main__':
     unittest.main()
