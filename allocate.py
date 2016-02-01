@@ -22,6 +22,12 @@ def allocate(thefile):
     Returns:
         Prints a message on success
     """
+
+    # check if the file is a txt file
+    if thefile[-3:] != "txt":
+        return "Not a txt file"
+        quit()
+
     # will hold list of items from a read line
     one_temp = []
 
@@ -346,7 +352,8 @@ def get_unallocated(thefile):
                 # assign thereflag true and  break
                 for row in cursor:
                     list_of_spaces = row[2].split(',')
-                    list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)  # remove unicode encoding
+                    # remove unicode encoding
+                    list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)
 
                     if name in list_of_spaces:  # if name exists in db
                         thereflag = True
