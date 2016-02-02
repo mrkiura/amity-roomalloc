@@ -1,6 +1,7 @@
+"""Import statements."""
 import unittest
 from populate import populate
-from allocate import print_allocations, allocate, depopulate, get_unallocated
+from amity import Amity
 import sqlite3
 import os.path
 
@@ -29,7 +30,9 @@ class AmityRoomAllocTestCase(unittest.TestCase):
 
     def test_allocate_allocates_offices(self):
         """Ensure allocate function actually allocates offices."""
-        allocate("test.txt")
+        building = Amity()
+
+        building.allocate("test.txt")
 
         conn = sqlite3.connect('roomalloc.db')
         cursor = conn.cursor()
@@ -44,7 +47,8 @@ class AmityRoomAllocTestCase(unittest.TestCase):
 
     def test_allocate_allocates_livingspaces(self):
         """Ensure allocate function actually allocates living spaces."""
-        allocate("test.txt")
+        building = Amity()
+        building.allocate("test.txt")
 
         conn = sqlite3.connect('roomalloc.db')
         cursor = conn.cursor()
@@ -58,26 +62,29 @@ class AmityRoomAllocTestCase(unittest.TestCase):
             break
 
     def test_allocate_fails_on_wrong_input(self):
-        """Ensure allocate.py's allocate uses valid txt files."""
-        msg = allocate("jbhvbhjbvhjv.tx")
+        """Ensure amity.py's allocate uses valid txt files."""
+        building = Amity()
+        msg = building.allocate("jbhvbhjbvhjv.tx")
         self.assertEqual(msg, "Not a txt file")
 
     def test_print_allocations(self):
-        """Test for allocate.py's print_allocations function.
+        """Test for amity.py's print_allocations function.
 
         Checks if function ran correctly
         """
-        msg = print_allocations()
+        building = Amity()
+        msg = building.print_allocations()
         self.assertEqual(msg, "Success")
 
         self.failUnlessEqual(os.path.isfile("allocations.txt"), True)
 
     def test_depopulate_runs_correctly(self):
-        """Test for allocate.py's depopulate function.
+        """Test for amity.py's depopulate function.
 
         Checks if function ran correctly
         """
-        msg = depopulate()
+        building = Amity()
+        msg = building.depopulate()
         self.assertEqual(msg, "Success")
 
 if __name__ == '__main__':
