@@ -48,12 +48,14 @@ class AmityRoomAllocTestCase(unittest.TestCase):
     def test_allocate_allocates_livingspaces(self):
         """Ensure allocate function actually allocates living spaces."""
         building = Amity()
-        building.allocate("test.txt")
+        lst = building.allocate("test.txt")
 
         conn = sqlite3.connect('roomalloc.db')
         cursor = conn.cursor()
 
         cursor.execute("SELECT name, capacity, spaces from rooms where type = 'LIVING' ")
+
+        self.assertTrue(type(lst), "list")
 
         for row in cursor:
             self.assertEqual(row[0], "Wood")
@@ -77,6 +79,12 @@ class AmityRoomAllocTestCase(unittest.TestCase):
         self.assertEqual(msg, "Success")
 
         self.failUnlessEqual(os.path.isfile("allocations.txt"), True)
+
+    def test_print_members_returns_correctly(self):
+        """Check print_members function returns error on wrong input."""
+        building = Amity()
+        msg = building.print_members("Pakistan")
+        self.assertEqual(msg, "Error")
 
     def test_depopulate_runs_correctly(self):
         """Test for amity.py's depopulate function.
