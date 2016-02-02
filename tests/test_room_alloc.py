@@ -9,7 +9,7 @@ class AmityRoomAllocTestCase(unittest.TestCase):
     """Tests for Amity room allocation system."""
 
     def test_populate(self):
-    	"""Test for populate.py's populate function.
+        """Test for populate.py's populate function.
 
         Checks if offices and living spaces have been
         initialized correctly
