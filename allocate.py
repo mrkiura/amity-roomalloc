@@ -49,7 +49,8 @@ def allocate(thefile):
 
     # loop through all the lines from file and allocate people rooms
     for temp in alllines:
-        if len(temp) == 3:  # STAFF e.g CHIDIEBERE NNADI STAFF
+        # Both staff and fellows get offices
+        if len(temp) == 3 or len(temp) == 4:
             # select all offices from db (allocate only to office)
             cursor.execute("SELECT name, capacity, spaces from rooms where type = 'OFFICE' ")
 
@@ -82,45 +83,9 @@ def allocate(thefile):
 
                     # stop looping through row
                     break
-        elif len(temp) == 4:  # FELLOWS e.g AMOS OMONDI FELLOW Y
-            # assign office to all fellows regardless of Y or N
-            if temp[3] == "N" or temp[3] == "Y":
-                # select all offices from db
-                cursor.execute("SELECT name, capacity, spaces from rooms where type = 'OFFICE' ")
 
-                # loop through rows. If a zero is found in spaces,
-                # assign room, break
-                for row in cursor:
-                    # split string of spaces from db into a list
-                    list_of_spaces = row[2].split(',')
-
-                    # remove unicode encoding
-                    list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)
-
-                    # if office not full
-                    if '0' in list_of_spaces:
-                        # loop through the items in office
-                        for index, item in enumerate(list_of_spaces):
-                            # if one of the items in office is a zero
-                            if item == '0':
-                                # assign a person name to that index,
-                                # convert list to string and update in db
-                                list_of_spaces[index] = temp[0] + " " + temp[1]
-                                string_of_spaces = ",".join(list_of_spaces)
-
-                                cursor.execute("UPDATE rooms set spaces = ? where name = ?", (string_of_spaces, row[0]))
-                                conn.commit()
-
-                                # stop looping through spaces
-                                break
-
-                        # stop looping through row
-                        break
-
-            if temp[3] == "Y":
-                # allocate living space for those fellows
-                # who want it
-
+        # allocate living spaces to fellows who want it
+        if len(temp) == 4 and temp[3] == "Y":  # SAMPLE: AMOS OMONDI FELLOW Y
                 # select all living spaces from db
                 cursor.execute("SELECT name, capacity, spaces from rooms where type = 'LIVING' ")
 
