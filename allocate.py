@@ -7,8 +7,7 @@ cursor = conn.cursor()
 
 
 def allocate(thefile):
-    """Reads a formatted text file of names and allocates
-    rooms to random people
+    """Read a formatted text file of names and allocate rooms randomly.
 
     Called by this command:
         python allocate.py allocate <nameoffile>
@@ -22,7 +21,6 @@ def allocate(thefile):
     Returns:
         Prints a message on success
     """
-
     # check if the file is a txt file
     if thefile[-3:] != "txt":
         return "Not a txt file"
@@ -164,8 +162,7 @@ def allocate(thefile):
 
 
 def get_allocations():
-    """Lists all the rooms and all their members on
-    screen
+    """List all the rooms and all their members on screen.
 
     Called by this command:
         python allocate.py get allocations
@@ -211,8 +208,7 @@ def get_allocations():
 
 
 def print_allocations():
-    """Prints all the rooms and all their members in a text
-    file called allocations.txt
+    """Print all the rooms and all their members in a txt file.
 
     Called by this command:
         python allocate.py print allocations
@@ -268,7 +264,8 @@ def print_allocations():
 
 
 def print_members(room):
-    """Shows the list of people allocated to a room
+    """Show the list of people allocated to a room.
+
     Called by command:
         python allocate.py print allocations <roomname>
 
@@ -281,7 +278,6 @@ def print_members(room):
     Raises:
         A "No such room" sqlite3 Error
     """
-
     try:
         # select required room from databse
         cursor.execute("SELECT type, capacity, spaces from rooms where name = ?", ([room]))
@@ -311,7 +307,8 @@ def print_members(room):
 
 
 def get_unallocated(thefile):
-    """Shows the list of unallocated people
+    """Show the list of unallocated people.
+
     Called by the allocate function before it exits
 
     Args:
@@ -321,7 +318,6 @@ def get_unallocated(thefile):
         A message "No Unallocated People" otherwise
             prints a list of unallocated people on screen
     """
-
     #  will hold a line from the file temporarily
     temp = []
     #  will hold names of unallocated people
@@ -362,7 +358,7 @@ def get_unallocated(thefile):
                 if thereflag is False:  # person not found
                     unallocated_people.append(name)
 
-    # check if anyone exists in the unallocated people list
+    #  check if anyone exists in the unallocated people list
     #  and print their name
     if len(unallocated_people) == 0:
         print "No Unallocated People"
@@ -373,9 +369,12 @@ def get_unallocated(thefile):
         for name in unallocated_people:
             print "%s\n" % name
 
+    return unallocated_people
+
 
 def depopulate():
-    """Deletes the rooms table from the database.
+    """Delete the rooms table from the database.
+
     Called by this command:
         python allocate.py depopulate
 
