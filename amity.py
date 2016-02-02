@@ -255,6 +255,7 @@ class Amity(object):
         # exit if no room found
         if theroom is None:
             print "No such room"
+            return "Error"
             quit()
 
         # print the info in theroom list
