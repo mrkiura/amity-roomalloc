@@ -1,17 +1,19 @@
 import unittest
 from populate import populate
-from allocate import print_allocations, allocate, depopulate
+from allocate import print_allocations, allocate, depopulate, get_unallocated
 import sqlite3
+import os.path
 
 
 class AmityRoomAllocTestCase(unittest.TestCase):
+    """Tests for Amity room allocation system."""
 
     def test_populate(self):
-    	"""Tests for populate.py's populate function
+    	"""Test for populate.py's populate function.
+
         Checks if offices and living spaces have been
         initialized correctly
         """
-
         lst = populate()
 
         # check offices randomly
@@ -26,8 +28,7 @@ class AmityRoomAllocTestCase(unittest.TestCase):
         self.failUnlessEqual(lst[1][5], ('Gryffindor', 'LIVING', 4, '0,0,0,0'))
 
     def test_allocate_allocates_offices(self):
-        '''Ensures allocate function actually allocates
-        offices'''
+        """Ensure allocate function actually allocates offices."""
         allocate("test.txt")
 
         conn = sqlite3.connect('roomalloc.db')
@@ -41,11 +42,8 @@ class AmityRoomAllocTestCase(unittest.TestCase):
             self.assertNotEqual(row[2], '0,0,0,0,0,0')
             break
 
-        cursor.execute("SELECT name, capacity, spaces from rooms where type = 'LIVING' ")
-
     def test_allocate_allocates_livingspaces(self):
-        '''Ensures allocate function actually allocates
-        living spaces'''
+        """Ensure allocate function actually allocates living spaces."""
         allocate("test.txt")
 
         conn = sqlite3.connect('roomalloc.db')
@@ -60,24 +58,25 @@ class AmityRoomAllocTestCase(unittest.TestCase):
             break
 
     def test_allocate_fails_on_wrong_input(self):
-        '''Ensures allocate.py's allocate function only
-        allocates when called with a valid txt file'''
+        """Ensure allocate.py's allocate uses valid txt files."""
         msg = allocate("jbhvbhjbvhjv.tx")
         self.assertEqual(msg, "Not a txt file")
 
     def test_print_allocations(self):
-        """Tests for allocate.py's print_allocations function
+        """Test for allocate.py's print_allocations function.
+
         Checks if function ran correctly
         """
-
         msg = print_allocations()
         self.assertEqual(msg, "Success")
 
+        self.failUnlessEqual(os.path.isfile("allocations.txt"), True)
+
     def test_depopulate_runs_correctly(self):
-        """Tests for allocate.py's depopulate function
+        """Test for allocate.py's depopulate function.
+
         Checks if function ran correctly
         """
-
         msg = depopulate()
         self.assertEqual(msg, "Success")
 
