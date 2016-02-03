@@ -100,6 +100,8 @@ class AmityRoomAllocTestCase(unittest.TestCase):
         lst = building.get_allocations()
         self.assertGreater(len(lst), 0)
 
+        building.depopulate()
+
     def test_depopulate_runs_correctly(self):
         """Test for amity.py's depopulate function.
 
