@@ -76,8 +76,8 @@ class AmityRoomAllocTestCase(unittest.TestCase):
         """
         building = Amity()
         msg = building.print_allocations()
-        self.assertEqual(msg, "Success")
 
+        self.assertEqual(msg, "Success")
         self.failUnlessEqual(os.path.isfile("allocations.txt"), True)
 
     def test_print_members_returns_correctly(self):
@@ -85,6 +85,22 @@ class AmityRoomAllocTestCase(unittest.TestCase):
         building = Amity()
         msg = building.print_members("Pakistan")
         self.assertEqual(msg, "Error")
+
+    def test_get_allocations(self):
+        """Test get allocations finds something in db after allocations."""
+        # ensure rooms table exists
+        populate()
+
+        # create amity building
+        building = Amity()
+
+        # allocate rooms
+        building.allocate("test.txt")
+
+        lst = building.get_allocations()
+        self.assertTrue(len(lst) > 0)
+
+        building.depopulate()
 
     def test_depopulate_runs_correctly(self):
         """Test for amity.py's depopulate function.
