@@ -140,6 +140,8 @@ class Amity(object):
         # select all details from all rooms
         cursor.execute("SELECT name, type, capacity, spaces FROM rooms")
 
+        lst_of_names = []
+
         # loop through rooms
         for row in cursor:
             # for each room, split it's spaces into a list
@@ -169,9 +171,13 @@ class Amity(object):
                 print "**MEMBERS**"
                 for item in list_of_spaces:
                     if item != '0':
+                        lst_of_names.append(i)
                         print item
                 print "----------------------------"
                 print "\n"
+
+        # return list of names printed
+        return lst_of_names
 
     def print_allocations(self):
         """Print all the rooms and all their members in a txt file.
