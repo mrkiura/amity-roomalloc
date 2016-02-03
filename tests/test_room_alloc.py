@@ -98,7 +98,7 @@ class AmityRoomAllocTestCase(unittest.TestCase):
         building.allocate("test.txt")
 
         lst = building.get_allocations()
-        self.assertGreater(len(lst), 0)
+        self.assertTrue(len(lst) > 0)
 
         building.depopulate()
 
@@ -110,12 +110,6 @@ class AmityRoomAllocTestCase(unittest.TestCase):
         building = Amity()
         msg = building.depopulate()
         self.assertEqual(msg, "Success")
-
-    def test_amity_class_instances(self):
-        """Test if building object is an instance of Amity."""
-        building = Amity()
-
-        self.assertIsInstance(building, Amity)
 
 if __name__ == '__main__':
     unittest.main()
