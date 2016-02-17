@@ -83,37 +83,37 @@ class Amity(object):
 
             # allocate living spaces to fellows who want it
             if len(temp) == 4 and temp[3] == "Y":  # SAMPLE: AMOS OMONDI FELLOW Y
-                    # select all living spaces from db
-                    cursor.execute("SELECT name, capacity, spaces from rooms where type = 'LIVING' ")
+                # select all living spaces from db
+                cursor.execute("SELECT name, capacity, spaces from rooms where type = 'LIVING' ")
 
-                    # loop through rows. If a zero is found in spaces,
-                    # assign room, break
-                    for row in cursor:
-                        # split string of spaces from db into a list
-                        list_of_spaces = row[2].split(',')
+                # loop through rows. If a zero is found in spaces,
+                # assign room, break
+                for row in cursor:
+                    # split string of spaces from db into a list
+                    list_of_spaces = row[2].split(',')
 
-                        # remove unicode encoding
-                        list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)
+                    # remove unicode encoding
+                    list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)
 
-                        # if office not full
-                        if '0' in list_of_spaces:
-                            # loop through the items in office
-                            for index, item in enumerate(list_of_spaces):
-                                # if one of the items in office is a zero
-                                if item == '0':
-                                    # assign a person name to that index,
-                                    # convert list to string and update in db
-                                    list_of_spaces[index] = temp[0] + " " + temp[1]
-                                    string_of_spaces = ",".join(list_of_spaces)
+                    # if office not full
+                    if '0' in list_of_spaces:
+                        # loop through the items in office
+                        for index, item in enumerate(list_of_spaces):
+                            # if one of the items in office is a zero
+                            if item == '0':
+                                # assign a person name to that index,
+                                # convert list to string and update in db
+                                list_of_spaces[index] = temp[0] + " " + temp[1]
+                                string_of_spaces = ",".join(list_of_spaces)
 
-                                    cursor.execute("UPDATE rooms set spaces = ? where name = ?", (string_of_spaces, row[0]))
-                                    conn.commit()
+                                cursor.execute("UPDATE rooms set spaces = ? where name = ?", (string_of_spaces, row[0]))
+                                conn.commit()
 
-                                    # stop looping through spaces
-                                    break
+                                # stop looping through spaces
+                                break
 
-                            # stop looping through row
-                            break
+                        # stop looping through row
+                        break
 
         # Notify user of success
         print "Rooms allocated successfully"
