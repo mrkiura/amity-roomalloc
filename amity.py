@@ -29,9 +29,6 @@ class Amity(object):
             return "Not a txt file"
             quit()
 
-        # will hold list of items from a read line
-        one_temp = []
-
         # list containing lists of all the read lines in the file
         alllines = []
 
@@ -41,11 +38,8 @@ class Amity(object):
 
             for line in f:
                 if len(line) > 2:
-                    # split current line into a list
-                    one_temp = line.split()
-
                     # add current line to list of all lines
-                    alllines.append(one_temp)
+                    alllines.append(line.split()
 
         # randomize people before allocation
         random.shuffle(alllines)
