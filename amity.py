@@ -39,9 +39,9 @@ class Amity(object):
             for line in f:
                 if len(line) > 2:
                     # add current line to list of all lines
-                    alllines.append(line.split()
+                    alllines.append(line.split())
 
-        # randomize people before allocation
+        # randomize people before allocations
         random.shuffle(alllines)
 
         # loop through all the lines from file and allocate people rooms
