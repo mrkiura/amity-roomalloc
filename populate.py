@@ -1,8 +1,17 @@
+"""Import statements."""
 import sqlite3
 from models.rooms import Office, LivingSpace
 
 
 def populate():
+    """Initialize empty rooms in database.
+
+    Called by this command:
+            python populate.py
+
+    Returns:
+            Prints a message on success
+    """
     # lists of the room names
     office_names = ["Narnia", "Camelot", "Krypton", "Valhalla", "Hogwarts",
                     "Mordor", "Occulus", "Midgard", "Orange", "Turqoise"]
@@ -46,16 +55,19 @@ def populate():
 
     # create rooms table
     cursor.execute("""CREATE TABLE IF NOT EXISTS rooms
-                   (name text PRIMARY KEY, type text, capacity integer, spaces text)""")
+                   (name text PRIMARY KEY, type text, capacity integer, \
+                    spaces text)""")
 
     # insert the data (empty rooms)
     try:
         #  insert offices
-        cursor.executemany("INSERT INTO rooms VALUES (?, ?, ?, ?)", office_populator)
+        cursor.executemany("INSERT INTO rooms VALUES (?, ?, ?, ?)",
+                           office_populator)
         conn.commit()
 
         # insert living spaces
-        cursor.executemany("INSERT INTO rooms VALUES (?, ?, ?, ?)", livingspace_populator)
+        cursor.executemany("INSERT INTO rooms VALUES (?, ?, ?, ?)",
+                           livingspace_populator)
         conn.commit()
 
         print "Database populated successfully"
