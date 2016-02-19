@@ -20,8 +20,10 @@ class AmityRoomAllocTestCase(unittest.TestCase):
         # check offices randomly
         self.failUnlessEqual(lst[0][0], ('Narnia', 'OFFICE', 6, '0,0,0,0,0,0'))
         self.failUnlessEqual(lst[0][8], ('Orange', 'OFFICE', 6, '0,0,0,0,0,0'))
-        self.failUnlessEqual(lst[0][6], ('Occulus', 'OFFICE', 6, '0,0,0,0,0,0'))
-        self.failUnlessEqual(lst[0][4], ('Hogwarts', 'OFFICE', 6, '0,0,0,0,0,0'))
+        self.failUnlessEqual(lst[0][6],
+                             ('Occulus', 'OFFICE', 6, '0,0,0,0,0,0'))
+        self.failUnlessEqual(lst[0][4],
+                             ('Hogwarts', 'OFFICE', 6, '0,0,0,0,0,0'))
 
         self.failUnlessEqual(lst[1][0], ('Wood', 'LIVING', 4, '0,0,0,0'))
         self.failUnlessEqual(lst[1][3], ('Wick', 'LIVING', 4, '0,0,0,0'))
@@ -37,7 +39,8 @@ class AmityRoomAllocTestCase(unittest.TestCase):
         conn = sqlite3.connect('roomalloc.db')
         cursor = conn.cursor()
 
-        cursor.execute("SELECT name, capacity, spaces from rooms where type = 'OFFICE' ")
+        cursor.execute("SELECT name, capacity, spaces from rooms where \
+            type = 'OFFICE' ")
 
         for row in cursor:
             self.assertEqual(row[0], "Narnia")
@@ -53,7 +56,8 @@ class AmityRoomAllocTestCase(unittest.TestCase):
         conn = sqlite3.connect('roomalloc.db')
         cursor = conn.cursor()
 
-        cursor.execute("SELECT name, capacity, spaces from rooms where type = 'LIVING' ")
+        cursor.execute("SELECT name, capacity, spaces from rooms where \
+            type = 'LIVING' ")
 
         self.assertTrue(type(lst), "list")
 
