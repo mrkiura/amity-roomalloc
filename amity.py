@@ -49,7 +49,8 @@ class Amity(object):
             # Both staff and fellows get offices
             if len(temp) == 3 or len(temp) == 4:
                 # select all offices from db (allocate only to office)
-                cursor.execute("SELECT name, capacity, spaces from rooms where type = 'OFFICE' ")
+                cursor.execute("SELECT name, capacity, spaces from rooms \
+                    where type = 'OFFICE' ")
 
                 # loop through rows. If a zero is found in spaces,
                 # assign room to current staff member then exit
@@ -58,7 +59,8 @@ class Amity(object):
                     list_of_spaces = row[2].split(',')
 
                     # remove unicode encoding
-                    list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)
+                    list_of_spaces = map(lambda x: x.encode('ascii'),
+                                         list_of_spaces)
 
                     # if office not full
                     if '0' in list_of_spaces:
@@ -72,7 +74,9 @@ class Amity(object):
                                 string_of_spaces = ",".join(list_of_spaces)
 
                                 # update database with new name
-                                cursor.execute("UPDATE rooms set spaces = ? where name = ?", (string_of_spaces, row[0]))
+                                cursor.execute("UPDATE rooms set spaces = ? \
+                                 where name = ?", (string_of_spaces, row[0]))
+
                                 conn.commit()
 
                                 # stop looping through db spaces
@@ -82,9 +86,10 @@ class Amity(object):
                         break
 
             # allocate living spaces to fellows who want it
-            if len(temp) == 4 and temp[3] == "Y":  # SAMPLE: AMOS OMONDI FELLOW Y
+            if len(temp) == 4 and temp[3] == "Y":  # e.g AMOS OMONDI FELLOW Y
                 # select all living spaces from db
-                cursor.execute("SELECT name, capacity, spaces from rooms where type = 'LIVING' ")
+                cursor.execute("SELECT name, capacity, spaces from rooms \
+                 where type = 'LIVING' ")
 
                 # loop through rows. If a zero is found in spaces,
                 # assign room, break
@@ -93,7 +98,8 @@ class Amity(object):
                     list_of_spaces = row[2].split(',')
 
                     # remove unicode encoding
-                    list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)
+                    list_of_spaces = map(lambda x: x.encode('ascii'),
+                                         list_of_spaces)
 
                     # if office not full
                     if '0' in list_of_spaces:
@@ -106,7 +112,9 @@ class Amity(object):
                                 list_of_spaces[index] = temp[0] + " " + temp[1]
                                 string_of_spaces = ",".join(list_of_spaces)
 
-                                cursor.execute("UPDATE rooms set spaces = ? where name = ?", (string_of_spaces, row[0]))
+                                cursor.execute("UPDATE rooms set spaces = ? \
+                                 where name = ?", (string_of_spaces, row[0]))
+
                                 conn.commit()
 
                                 # stop looping through spaces
@@ -245,7 +253,8 @@ class Amity(object):
         """
         try:
             # select required room from databse
-            cursor.execute("SELECT type, capacity, spaces from rooms where name = ?", ([room]))
+            cursor.execute("SELECT type, capacity, spaces from rooms \
+                where name = ?", ([room]))
         except sqlite3.Error:
             print "Error occurred"
 
@@ -260,12 +269,14 @@ class Amity(object):
 
         # print the info in theroom list
         print "**********ROOM DETAILS************\n"
-        print "ROOM TYPE: %s \t ROOM NAME: %s \t CAPACITY: %s \n\n" % (theroom[0], room, theroom[1])
+        print "ROOM TYPE: %s \t ROOM NAME: %s \t CAPACITY: %s \n\n" \
+            % (theroom[0], room, theroom[1])
 
         print "**********ROOM MEMBERS************\n"
 
         list_of_spaces = theroom[2].split(',')
-        list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)  # remove unicode encoding
+        # remove unicode encoding
+        list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)
 
         for i in list_of_spaces:
             if i != '0':
@@ -307,14 +318,16 @@ class Amity(object):
                     thereflag = False
 
                     # select all offices from db
-                    cursor.execute("SELECT name, capacity, spaces from rooms where type = 'OFFICE' ")
+                    cursor.execute("SELECT name, capacity, spaces from rooms \
+                     where type = 'OFFICE' ")
 
                     # loop through rows. If name is found in spaces,
                     # assign thereflag true and  break
                     for row in cursor:
                         list_of_spaces = row[2].split(',')
                         # remove unicode encoding
-                        list_of_spaces = map(lambda x: x.encode('ascii'), list_of_spaces)
+                        list_of_spaces = map(lambda x: x.encode('ascii'),
+                                             list_of_spaces)
 
                         if name in list_of_spaces:  # if name exists in db
                             thereflag = True
@@ -355,7 +368,8 @@ class Amity(object):
         try:
             cursor.execute("DROP TABLE rooms")
             conn.commit()
-            print "Depopulation successful. Run populate.py again to repopulate."
+            print "Depopulation successful. Run populate.py" \
+                " again to repopulate."
         except sqlite3.Error:
             print "Depopulation already done. Run populate.py."
 
