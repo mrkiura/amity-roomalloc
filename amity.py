@@ -45,9 +45,9 @@ class Amity(object):
         random.shuffle(alllines)
 
         # loop through all the lines from file and allocate people rooms
-        for temp in alllines:
+        for line in alllines:
             # Both staff and fellows get offices
-            if len(temp) == 3 or len(temp) == 4:
+            if len(line) == 3 or len(line) == 4:
                 # select all offices from db (allocate only to office)
                 cursor.execute("SELECT name, capacity, spaces from rooms \
                     where type = 'OFFICE' ")
@@ -70,7 +70,7 @@ class Amity(object):
                             if item == '0':
                                 # assign a name to that index, convert list
                                 # to string and update in db
-                                list_of_spaces[index] = temp[0] + " " + temp[1]
+                                list_of_spaces[index] = line[0] + " " + line[1]
                                 string_of_spaces = ",".join(list_of_spaces)
 
                                 # update database with new name
@@ -86,7 +86,7 @@ class Amity(object):
                         break
 
             # allocate living spaces to fellows who want it
-            if len(temp) == 4 and temp[3] == "Y":  # e.g AMOS OMONDI FELLOW Y
+            if len(line) == 4 and line[3] == "Y":  # e.g AMOS OMONDI FELLOW Y
                 # select all living spaces from db
                 cursor.execute("SELECT name, capacity, spaces from rooms \
                  where type = 'LIVING' ")
@@ -109,7 +109,7 @@ class Amity(object):
                             if item == '0':
                                 # assign a person name to that index,
                                 # convert list to string and update in db
-                                list_of_spaces[index] = temp[0] + " " + temp[1]
+                                list_of_spaces[index] = line[0] + " " + line[1]
                                 string_of_spaces = ",".join(list_of_spaces)
 
                                 cursor.execute("UPDATE rooms set spaces = ? \
