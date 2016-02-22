@@ -1,5 +1,5 @@
 ![alt text](https://travis-ci.org/andela-aomondi/amity-roomalloc.svg?branch=master)
-[![Coverage Status](https://coveralls.io/repos/github/andela-aomondi/amity-roomalloc/badge.svg?branch=master)](https://coveralls.io/github/andela-aomondi/amity-roomalloc?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/andela-aomondi/amity-roomalloc/badge.svg?branch=develop)](https://coveralls.io/github/andela-aomondi/amity-roomalloc?branch=develop)
 
 # AMITY ROOM ALLOCATION SYSTEM
 
